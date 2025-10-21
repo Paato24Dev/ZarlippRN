@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZarlippRN - Servicio de Transporte</title>
+    
+    <!-- Favicon con logo CTX -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNiIgZmlsbD0iIzFhMWEyZSIvPgo8cGF0aCBkPSJNIDggOCBRIDggNiAxMCA2IEwgMjIgNiBRIDI0IDYgMjQgOCBMIDI0IDEwIFEgMjQgMTIgMjIgMTIgTCAyMCAxMiIgc3Ryb2tlPSIjMDBkNGZmIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8dGV4dCB4PSIxNiIgeT0iMTgiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iIzFhMWEyZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgc3Ryb2tlPSIjMDBkNGZmIiBzdHJva2Utd2lkdGg9IjAuNSI+VFg8L3RleHQ+CjxwYXRoIGQ9Ik0gMjAgMTIgTCAyMiAxNCBMIDI0IDEyIEwgMjQgMTYgTCAyNiAxNiIgc3Ryb2tlPSIjMDBkNGZmIiBzdHJva2Utd2lkdGg9IjEuNSIgZmlsbD0ibm9uZSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9IjE2IiBjeT0iMTYiIHI9IjEyIiBmaWxsPSJub25lIiBzdHJva2U9InVybCgjZmF2aWNvbi1nbG93KSIgc3Ryb2tlLXdpZHRoPSIxIiBvcGFjaXR5PSIwLjMiLz4KPGRlZnM+CjxyYWRpYWxHcmFkaWVudCBpZD0iZmF2aWNvbi1nbG93IiBjeD0iNTAlIiBjeT0iNTAlIiByPSI1MCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojMDBkNGZmO3N0b3Atb3BhY2l0eTowLjgiLz4KPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojNzIwOWI3O3N0b3Atb3BhY2l0eTowIi8+CjwvcmFkaWFsR3JhZGllbnQ+CjwvZGVmcz4KPHN2Zz4K">
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon.svg">
+    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- OPCIÓN 1: Google Maps (requiere API Key y facturación) -->
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=TU_API_KEY_AQUI&libraries=places&callback=initMap" async defer></script> -->
+    
+    <!-- OPCIÓN 2: Leaflet (OpenStreetMap - COMPLETAMENTE GRATIS) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // Función para inicializar mapa con Leaflet (gratis)
+        function initMap() {
+            console.log('Inicializando mapa con Leaflet (OpenStreetMap)');
+            initLeafletMap();
+        }
+        
+        function initLeafletMap() {
+            // Crear mapa centrado en Argentina
+            const map = L.map('map').setView([-35.0, -65.0], 6);
+            
+            // Agregar capa de OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 18
+            }).addTo(map);
+            
+            // Agregar marcador de ubicación del usuario
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        
+                        // Marcador de usuario
+                        const userIcon = L.divIcon({
+                            className: 'user-location-marker',
+                            html: '<div style="background: #00d4aa; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.3);"></div>',
+                            iconSize: [20, 20],
+                            iconAnchor: [10, 10]
+                        });
+                        
+                        L.marker([lat, lng], { icon: userIcon })
+                            .addTo(map)
+                            .bindPopup('📍 Tu ubicación')
+                            .openPopup();
+                        
+                        map.setView([lat, lng], 13);
+                        showNotification('Ubicación obtenida correctamente', 'success');
+                    },
+                    (error) => {
+                        console.error('Error obteniendo ubicación:', error);
+                        showNotification('No se pudo obtener tu ubicación', 'warning');
+                    }
+                );
+            }
+            
+            // Agregar conductores de prueba
+            const drivers = [
+                { name: 'Carlos Mendoza', lat: -34.6037, lng: -58.3816, city: 'Buenos Aires', vehicle: 'Toyota Corolla', color: 'Blanco', plate: 'ABC-123', rating: 4.8 },
+                { name: 'María González', lat: -31.4201, lng: -64.1888, city: 'Córdoba', vehicle: 'Chevrolet Cruze', color: 'Azul', plate: 'DEF-456', rating: 4.9 },
+                { name: 'Roberto Silva', lat: -32.9442, lng: -60.6505, city: 'Rosario', vehicle: 'Ford Focus', color: 'Negro', plate: 'GHI-789', rating: 4.7 },
+                { name: 'Ana Rodríguez', lat: -24.7821, lng: -65.4232, city: 'Tucumán', vehicle: 'Volkswagen Golf', color: 'Rojo', plate: 'JKL-012', rating: 5.0 },
+                { name: 'Diego López', lat: -26.8241, lng: -65.2223, city: 'Salta', vehicle: 'Renault Logan', color: 'Gris', plate: 'MNO-345', rating: 4.6 },
+                { name: 'Laura Fernández', lat: -38.0023, lng: -57.5575, city: 'Mar del Plata', vehicle: 'Peugeot 208', color: 'Verde', plate: 'PQR-678', rating: 4.9 }
+            ];
+            
+            drivers.forEach(driver => {
+                const driverIcon = L.divIcon({
+                    className: 'driver-marker',
+                    html: '<div style="background: #7209b7; width: 30px; height: 30px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px;">🚗</div>',
+                    iconSize: [30, 30],
+                    iconAnchor: [15, 15]
+                });
+                
+                L.marker([driver.lat, driver.lng], { icon: driverIcon })
+                    .addTo(map)
+                    .bindPopup(`
+                        <div style="color: #1a1a2e; padding: 10px; min-width: 200px;">
+                            <h3 style="margin: 0 0 8px 0; color: #7209b7;">🚗 ${driver.name}</h3>
+                            <p style="margin: 2px 0;"><strong>📍 Ciudad:</strong> ${driver.city}</p>
+                            <p style="margin: 2px 0;"><strong>🚙 Vehículo:</strong> ${driver.vehicle}</p>
+                            <p style="margin: 2px 0;"><strong>🎨 Color:</strong> ${driver.color}</p>
+                            <p style="margin: 2px 0;"><strong>🔢 Placa:</strong> ${driver.plate}</p>
+                            <p style="margin: 2px 0; color: #ff6b35;"><strong>⭐ ${driver.rating}</strong></p>
+                            <div style="background: #7209b7; color: white; padding: 3px 8px; border-radius: 10px; font-size: 10px; display: inline-block; margin-top: 5px;">
+                                DISPONIBLE
+                            </div>
+                        </div>
+                    `);
+            });
+            
+            console.log('Mapa Leaflet inicializado con', drivers.length, 'conductores');
+        }
+        
+        // Función temporal para simular Google Maps (fallback)
+        function showTestMap() {
+            const mapContainer = document.getElementById('map');
+            if (mapContainer) {
+                mapContainer.innerHTML = `
+                    <div style="
+                        width: 100%; 
+                        height: 100%; 
+                        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: center;
+                        align-items: center;
+                        color: white;
+                        text-align: center;
+                        position: relative;
+                        overflow: hidden;
+                    ">
+                        <div style="position: absolute; top: 20px; left: 20px; background: rgba(114, 9, 183, 0.8); padding: 10px; border-radius: 10px;">
+                            <h3 style="margin: 0; color: white;">🗺️ Mapa de Prueba</h3>
+                            <p style="margin: 5px 0 0 0; font-size: 12px;">Configura tu API Key de Google Maps</p>
+                        </div>
+                        
+                        <div style="background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 15px; backdrop-filter: blur(10px);">
+                            <h2 style="margin: 0 0 20px 0; color: #7209b7;">🚗 ZarlippRN</h2>
+                            <p style="margin: 0 0 15px 0;">Sistema de Transporte</p>
+                            <p style="margin: 0 0 20px 0; font-size: 14px; color: #b0b0b0;">Para activar el mapa real, necesitas configurar tu API Key de Google Maps</p>
+                            
+                            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                                <div style="background: rgba(114, 9, 183, 0.3); padding: 10px; border-radius: 8px; min-width: 120px;">
+                                    <div style="font-size: 24px; margin-bottom: 5px;">📍</div>
+                                    <div style="font-size: 12px;">Tu Ubicación</div>
+                                </div>
+                                <div style="background: rgba(114, 9, 183, 0.3); padding: 10px; border-radius: 8px; min-width: 120px;">
+                                    <div style="font-size: 24px; margin-bottom: 5px;">🚗</div>
+                                    <div style="font-size: 12px;">6 Conductores</div>
+                                </div>
+                                <div style="background: rgba(114, 9, 183, 0.3); padding: 10px; border-radius: 8px; min-width: 120px;">
+                                    <div style="font-size: 24px; margin-bottom: 5px;">🇦🇷</div>
+                                    <div style="font-size: 12px;">Argentina</div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 20px; padding: 15px; background: rgba(0, 212, 170, 0.2); border-radius: 10px; border: 1px solid #00d4aa;">
+                                <h4 style="margin: 0 0 10px 0; color: #00d4aa;">✅ Funcionalidades Disponibles:</h4>
+                                <ul style="margin: 0; padding-left: 20px; text-align: left; font-size: 14px;">
+                                    <li>Sistema de autenticación completo</li>
+                                    <li>Base de datos PostgreSQL configurada</li>
+                                    <li>Chat en tiempo real</li>
+                                    <li>Sistema de pagos con Mercado Pago</li>
+                                    <li>Panel de administración</li>
+                                    <li>Geolocalización de usuarios</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div style="position: absolute; bottom: 20px; right: 20px; background: rgba(255, 107, 53, 0.8); padding: 8px 15px; border-radius: 20px; font-size: 12px;">
+                            ⚠️ Mapa de Prueba - Configura Google Maps API
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Simular carga de Google Maps
+        setTimeout(() => {
+            if (typeof initMap === 'function') {
+                initMap();
+            }
+        }, 1000);
+    </script>
+</head>
+<body>
+    <!-- Pantalla de Carga/Intro -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <!-- Logo CTX personalizado -->
+            <div class="loading-logo-container">
+                <svg class="loading-logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- C exterior -->
+                    <path d="M 50 50 Q 50 20 80 20 L 120 20 Q 150 20 150 50 L 150 80 Q 150 110 120 110 L 100 110" 
+                          stroke="#00d4ff" stroke-width="8" fill="none" stroke-linecap="round">
+                        <animate attributeName="stroke-dasharray" values="0,400;400,0" dur="2s" repeatCount="indefinite"/>
+                    </path>
+                    
+                    <!-- TX interior -->
+                    <text x="100" y="70" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+                          fill="#1a1a2e" text-anchor="middle" stroke="#00d4ff" stroke-width="2">TX</text>
+                    
+                    <!-- Y exterior -->
+                    <path d="M 120 110 L 140 130 L 160 110 L 160 150 L 180 150" 
+                          stroke="#00d4ff" stroke-width="6" fill="none" stroke-linecap="round">
+                        <animate attributeName="stroke-dasharray" values="0,100;100,0" dur="1.5s" repeatCount="indefinite"/>
+                    </path>
+                    
+                    <!-- Efectos de brillo -->
+                    <circle cx="100" cy="100" r="80" fill="none" stroke="url(#loading-glow)" stroke-width="2" opacity="0.3"/>
+                    <defs>
+                        <radialGradient id="loading-glow" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.8"/>
+                            <stop offset="100%" style="stop-color:#7209b7;stop-opacity:0"/>
+                        </radialGradient>
+                    </defs>
+                </svg>
+            </div>
+            
+            <!-- Título de la app -->
+            <h1 class="loading-app-name">ZarlippRN</h1>
+            <p class="loading-app-subtitle">Desarrollado por PaatoDev</p>
+            
+            <!-- Spinner de carga -->
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+            </div>
+            
+            <!-- Texto de carga -->
+            <p class="loading-text">Cargando tu experiencia de transporte...</p>
+            
+            <!-- Botón continuar -->
+            <button id="continue-btn" class="continue-btn">Continuar</button>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div id="main-content" class="main-content hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <!-- Logo CTX personalizado -->
+                    <div class="logo-container">
+                        <svg class="logo-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <!-- C exterior -->
+                            <path d="M 50 50 Q 50 20 80 20 L 120 20 Q 150 20 150 50 L 150 80 Q 150 110 120 110 L 100 110" 
+                                  stroke="#00d4ff" stroke-width="8" fill="none" stroke-linecap="round">
+                                <animate attributeName="stroke-dasharray" values="0,400;400,0" dur="2s" repeatCount="indefinite"/>
+                            </path>
+                            
+                            <!-- TX interior -->
+                            <text x="100" y="70" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+                                  fill="#1a1a2e" text-anchor="middle" stroke="#00d4ff" stroke-width="2">TX</text>
+                            
+                            <!-- Y exterior -->
+                            <path d="M 120 110 L 140 130 L 160 110 L 160 150 L 180 150" 
+                                  stroke="#00d4ff" stroke-width="6" fill="none" stroke-linecap="round">
+                                <animate attributeName="stroke-dasharray" values="0,100;100,0" dur="1.5s" repeatCount="indefinite"/>
+                            </path>
+                            
+                            <!-- Efectos de brillo -->
+                            <circle cx="100" cy="100" r="80" fill="none" stroke="url(#glow)" stroke-width="2" opacity="0.3"/>
+                            <defs>
+                                <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.8"/>
+                                    <stop offset="100%" style="stop-color:#7209b7;stop-opacity:0"/>
+                                </radialGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <h1>ZarlippRN</h1>
+                </div>
+                <nav class="main-nav">
+                    <button class="nav-btn active" data-tab="home">
+                        <i class="fas fa-home"></i>
+                        <span>Inicio</span>
+                    </button>
+                    <button class="nav-btn" data-tab="map">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>Mapa</span>
+                    </button>
+                    <button class="nav-btn" data-tab="book">
+                        <i class="fas fa-taxi"></i>
+                        <span>Solicitar</span>
+                    </button>
+                    <button class="nav-btn" data-tab="chat">
+                        <i class="fas fa-comments"></i>
+                        <span>Chat</span>
+                    </button>
+                    <button class="nav-btn" data-tab="profile" id="profile-tab-btn" style="display: none;">
+                        <i class="fas fa-user"></i>
+                        <span>Perfil</span>
+                    </button>
+                </nav>
+                <div class="user-section">
+                    <button id="login-btn" class="auth-btn">Iniciar Sesión</button>
+                    <button id="register-btn" class="auth-btn">Registrarse</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenido de las Pestañas -->
+        <main class="main-container">
+            <!-- Pestaña Inicio -->
+            <section id="home-tab" class="tab-content active">
+                <div class="hero-section">
+                    <h2>Bienvenido a ZarlippRN</h2>
+                    <p>Tu servicio de transporte confiable y seguro</p>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <i class="fas fa-clock"></i>
+                            <h3>Disponible 24/7</h3>
+                            <p>Servicio las 24 horas del día</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>Seguro y Confiable</h3>
+                            <p>Conductores verificados</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-dollar-sign"></i>
+                            <h3>Tarifa Fija</h3>
+                            <p>$4000 por viaje</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pestaña Mapa -->
+            <section id="map-tab" class="tab-content">
+                <div class="map-container">
+                    <h2>Taxis Disponibles en Tiempo Real</h2>
+                    <div id="map" class="map">
+                        <!-- Aquí irá el mapa -->
+                        <div class="map-placeholder">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <p>Mapa en tiempo real</p>
+                        </div>
+                    </div>
+                    <div class="map-controls">
+                        <button class="control-btn" onclick="getCurrentLocation()">
+                            <i class="fas fa-crosshairs"></i>
+                            Mi Ubicación
+                        </button>
+                        <button class="control-btn" onclick="showNotification('6 conductores disponibles en Argentina', 'success')">
+                            <i class="fas fa-taxi"></i>
+                            Ver Taxis
+                        </button>
+                        <button class="control-btn" onclick="registerAsDriver()" style="background: var(--gradient-secondary);">
+                            <i class="fas fa-user-plus"></i>
+                            Ser Conductor
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pestaña Solicitar -->
+            <section id="book-tab" class="tab-content">
+                <div class="booking-section">
+                    <h2>Solicitar Taxi</h2>
+                    <div class="booking-form">
+                        <div class="form-group">
+                            <label for="pickup-location">Ubicación de Origen</label>
+                            <input type="text" id="pickup-location" placeholder="Ingresa tu ubicación">
+                        </div>
+                        <div class="form-group">
+                            <label for="destination">Destino</label>
+                            <input type="text" id="destination" placeholder="¿A dónde quieres ir?">
+                        </div>
+                        <div class="form-group">
+                            <label for="passengers">Número de Pasajeros</label>
+                            <select id="passengers">
+                                <option value="1">1 Pasajero</option>
+                                <option value="2">2 Pasajeros</option>
+                                <option value="3">3 Pasajeros</option>
+                                <option value="4">4 Pasajeros</option>
+                            </select>
+                        </div>
+                        <div class="price-display">
+                            <span>Tarifa: $4000</span>
+                        </div>
+                        <button class="book-btn">Solicitar Taxi</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pestaña Chat -->
+            <section id="chat-tab" class="tab-content">
+                <div class="chat-section">
+                    <h2>Chat de Soporte</h2>
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message system">
+                                <p>¡Hola! ¿En qué podemos ayudarte?</p>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="message-input" placeholder="Escribe tu mensaje...">
+                            <button id="send-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pestaña Perfil -->
+            <section id="profile-tab" class="tab-content">
+                <div class="profile-section">
+                    <div class="profile-header">
+                        <h2>Mi Perfil</h2>
+                        <div class="profile-actions">
+                            <button class="action-btn" onclick="editProfile()">
+                                <i class="fas fa-edit"></i>
+                                Editar Perfil
+                            </button>
+                            <button class="action-btn logout-btn" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Cerrar Sesión
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-content">
+                        <!-- Información del Usuario -->
+                        <div class="profile-info-card">
+                            <div class="profile-avatar" id="profile-avatar">
+                                <img id="profile-image" src="" alt="Foto de perfil" style="display: none;">
+                                <i class="fas fa-user" id="default-avatar"></i>
+                                <div class="avatar-upload" onclick="document.getElementById('avatar-input').click()">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="handleAvatarUpload(event)">
+                            </div>
+                            <div class="profile-details">
+                                <h3 id="user-name">Usuario</h3>
+                                <p id="user-email">usuario@ejemplo.com</p>
+                                <p id="user-phone">+54 9 11 1234-5678</p>
+                                <div class="user-type-badge" id="user-type-badge">
+                                    <span class="type-label">Tipo:</span>
+                                    <span class="type-value">Pasajero</span>
+                                </div>
+                                <p class="member-since">Miembro desde 2024</p>
+                            </div>
+                        </div>
+
+                        <!-- Estadísticas -->
+                        <div class="profile-stats">
+                            <div class="stat-card">
+                                <i class="fas fa-taxi"></i>
+                                <span>Viajes Realizados</span>
+                                <strong id="total-trips">0</strong>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-star"></i>
+                                <span>Calificación Promedio</span>
+                                <strong id="user-rating">5.0</strong>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-dollar-sign"></i>
+                                <span>Total Gastado</span>
+                                <strong id="total-spent">$0</strong>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-calendar"></i>
+                                <span>Días Activo</span>
+                                <strong id="active-days">1</strong>
+                            </div>
+                        </div>
+
+                        <!-- Feed de Valoraciones -->
+                        <div class="ratings-feed">
+                            <h3>Valoraciones y Comentarios</h3>
+                            <div class="rating-form">
+                                <h4>Dejar Valoración</h4>
+                                <div class="rating-input">
+                                    <label>Calificación:</label>
+                                    <div class="star-rating" id="star-rating">
+                                        <i class="fas fa-star" data-rating="1"></i>
+                                        <i class="fas fa-star" data-rating="2"></i>
+                                        <i class="fas fa-star" data-rating="3"></i>
+                                        <i class="fas fa-star" data-rating="4"></i>
+                                        <i class="fas fa-star" data-rating="5"></i>
+                                    </div>
+                                </div>
+                                <div class="comment-input">
+                                    <label>Comentario:</label>
+                                    <textarea id="rating-comment" placeholder="Escribe tu comentario aquí..."></textarea>
+                                </div>
+                                <button class="submit-rating-btn" onclick="submitRating()">
+                                    <i class="fas fa-paper-plane"></i>
+                                    Enviar Valoración
+                                </button>
+                            </div>
+
+                            <!-- Lista de Valoraciones -->
+                            <div class="ratings-list" id="ratings-list">
+                                <div class="empty-ratings" id="empty-ratings">
+                                    <i class="fas fa-star"></i>
+                                    <h4>No hay valoraciones aún</h4>
+                                    <p>Las valoraciones que recibas aparecerán aquí</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Configuración de Cuenta -->
+                        <div class="account-settings">
+                            <h3>Configuración de Cuenta</h3>
+                            <div class="settings-grid">
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="notifications-enabled" checked>
+                                        <span class="checkmark"></span>
+                                        Notificaciones Push
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="location-sharing" checked>
+                                        <span class="checkmark"></span>
+                                        Compartir Ubicación
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="auto-payment">
+                                        <span class="checkmark"></span>
+                                        Pago Automático
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="dark-mode" checked>
+                                        <span class="checkmark"></span>
+                                        Modo Oscuro
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modales -->
+    <!-- Modal de Login -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Iniciar Sesión</h2>
+            <form class="auth-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Contraseña</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="auth-submit-btn">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Crear Cuenta</h2>
+                <span class="close" onclick="closeModal('register-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form class="auth-form">
+                    <div class="form-group">
+                        <label for="register-name">Nombre Completo</label>
+                        <input type="text" id="register-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-phone">Teléfono</label>
+                        <input type="tel" id="register-phone" placeholder="+54 9 11 1234-5678">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Contraseña</label>
+                        <input type="password" id="register-password" required>
+                    </div>
+                    
+                    <!-- Tipo de cuenta -->
+                    <div class="form-group">
+                        <label>Tipo de Cuenta</label>
+                        <div class="account-type-selector">
+                            <label class="account-type-option">
+                                <input type="radio" name="account-type" value="passenger" checked>
+                                <div class="account-type-card">
+                                    <i class="fas fa-user"></i>
+                                    <h4>Pasajero</h4>
+                                    <p>Solicitar viajes</p>
+                                </div>
+                            </label>
+                            <label class="account-type-option">
+                                <input type="radio" name="account-type" value="driver">
+                                <div class="account-type-card">
+                                    <i class="fas fa-car"></i>
+                                    <h4>Conductor</h4>
+                                    <p>Ofrecer viajes</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Campos específicos para conductores -->
+                    <div id="driver-fields" class="driver-fields" style="display: none;">
+                        <h3>Información del Vehículo</h3>
+                        <div class="form-group">
+                            <label for="driver-alias">Alias (para transferencias)</label>
+                            <input type="text" id="driver-alias" placeholder="Ej: CarlosTaxi">
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicle-type">Tipo de Vehículo</label>
+                            <select id="vehicle-type">
+                                <option value="sedan">Sedán</option>
+                                <option value="suv">SUV</option>
+                                <option value="hatchback">Hatchback</option>
+                                <option value="pickup">Pickup</option>
+                                <option value="van">Van</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicle-make">Marca del Vehículo</label>
+                            <input type="text" id="vehicle-make" placeholder="Ej: Toyota">
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicle-model">Modelo del Vehículo</label>
+                            <input type="text" id="vehicle-model" placeholder="Ej: Corolla">
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicle-color">Color del Vehículo</label>
+                            <input type="text" id="vehicle-color" placeholder="Ej: Blanco">
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicle-plate">Patente</label>
+                            <input type="text" id="vehicle-plate" placeholder="Ej: ABC-123">
+                        </div>
+                        <div class="form-group">
+                            <label for="driver-license">Número de Licencia</label>
+                            <input type="text" id="driver-license" placeholder="Ej: 12345678">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="auth-submit-btn">Crear Cuenta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="database-manager.js"></script>
+    <script src="admin-panel.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
