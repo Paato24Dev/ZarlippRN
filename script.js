@@ -3,6 +3,26 @@ let currentUser = null;
 let isLoggedIn = false;
 // API_BASE_URL se define en database-manager.js
 
+// Configuración de ciudades
+const CITIES = {
+    catriel: {
+        name: 'Catriel, Río Negro',
+        center: [-38.8519, -68.0625],
+        zoom: 13
+    },
+    '25demayo': {
+        name: '25 de Mayo, La Pampa',
+        center: [-37.8, -67.7],
+        zoom: 13
+    }
+};
+
+let currentCity = 'catriel';
+let map = null;
+let mapInitialized = false;
+let userLocation = null;
+let drivers = [];
+
 // Elementos del DOM
 const loadingScreen = document.getElementById('loading-screen');
 const mainContent = document.getElementById('main-content');
@@ -352,42 +372,75 @@ async function registerUser(name, email, phone, password) {
 }
 
 function registerUserLocal(name, email, phone, password, userType = 'passenger', driverInfo = null) {
+    console.log('=== REGISTRO LOCAL INICIADO ===');
+    console.log('Datos recibidos:', { name, email, phone, userType, driverInfo });
+    
     // Verificar si el usuario ya existe
     const existingUsers = JSON.parse(localStorage.getItem('localUsers') || '{}');
     
+    // Verificar por email
     if (existingUsers[email]) {
-        alert('El usuario ya existe');
+        alert('❌ El usuario con este email ya existe');
+        console.log('Usuario ya existe:', existingUsers[email]);
         return false;
     }
     
-    // Crear nuevo usuario
+    // Verificar por nombre (opcional, pero útil)
+    const existingUserByName = Object.values(existingUsers).find(user => user.name.toLowerCase() === name.toLowerCase());
+    if (existingUserByName) {
+        alert('❌ Ya existe un usuario con este nombre');
+        console.log('Nombre ya existe:', existingUserByName);
+        return false;
+    }
+    
+    // Crear nuevo usuario con datos únicos
     const newUser = {
-        id: Date.now(), // ID único basado en timestamp
+        id: Date.now() + Math.random(), // ID único más robusto
         name: name,
         email: email,
         phone: phone,
         password: password,
         userType: userType,
-        driverInfo: driverInfo // Información adicional para conductores
+        driverInfo: driverInfo,
+        createdAt: new Date().toISOString(),
+        stats: {
+            totalTrips: 0,
+            rating: 0,
+            totalSpent: 0,
+            activeDays: 0
+        },
+        profileImage: null, // Para futuras fotos
+        settings: {
+            notifications: true,
+            locationSharing: true,
+            autoPayment: false,
+            darkMode: true
+        }
     };
+    
+    console.log('Nuevo usuario creado:', newUser);
     
     // Guardar usuario localmente
     existingUsers[email] = newUser;
     localStorage.setItem('localUsers', JSON.stringify(existingUsers));
     
+    console.log('Usuario guardado en localStorage');
+    
     // Intentar guardar en base de datos
     DatabaseManager.saveUser(newUser).then(savedUser => {
         if (savedUser) {
-            console.log('Usuario guardado en base de datos:', savedUser);
+            console.log('✅ Usuario guardado en base de datos:', savedUser);
             
             // Si es conductor, guardar también el perfil de conductor
             if (userType === 'driver' && driverInfo) {
                 DatabaseManager.saveDriverProfile(savedUser.id, driverInfo).then(savedProfile => {
                     if (savedProfile) {
-                        console.log('Perfil de conductor guardado en BD:', savedProfile);
+                        console.log('✅ Perfil de conductor guardado en BD:', savedProfile);
                     }
                 });
             }
+        } else {
+            console.log('⚠️ No se pudo guardar en BD, pero se mantiene en localStorage');
         }
     });
     
@@ -398,11 +451,16 @@ function registerUserLocal(name, email, phone, password, userType = 'passenger',
         email: newUser.email,
         userType: newUser.userType,
         phone: newUser.phone,
-        driverInfo: newUser.driverInfo
+        driverInfo: newUser.driverInfo,
+        stats: newUser.stats,
+        profileImage: newUser.profileImage,
+        settings: newUser.settings
     };
     
     isLoggedIn = true;
     localStorage.setItem('user', JSON.stringify(currentUser));
+    
+    console.log('Usuario logueado automáticamente:', currentUser);
     
     // Actualizar UI inmediatamente
     updateAuthUI();
@@ -410,6 +468,7 @@ function registerUserLocal(name, email, phone, password, userType = 'passenger',
     showNotification(`¡Registro exitoso! Bienvenido ${name}`, 'success');
     console.log('Registro exitoso (modo local):', currentUser);
     
+    console.log('=== REGISTRO LOCAL COMPLETADO ===');
     return true;
 }
 
@@ -706,6 +765,62 @@ function setupChat() {
             sendMessage();
         }
     });
+    
+    // Inicializar chat con mensaje de bienvenida
+    initializeChat();
+}
+
+// Sistema de IA para chat de soporte
+const FAQ_RESPONSES = {
+    'tarifa': {
+        patterns: ['¿cuánto cuesta?', 'tarifa', 'precio', 'costo', 'cuánto vale'],
+        response: 'La tarifa fija es $4.000. Incluye seguro de riesgo, servicio 24/7 y vehículo seguro y confiable. No hay tarifas adicionales por distancia dentro de la ciudad.'
+    },
+    'horarios': {
+        patterns: ['horarios', 'cuándo', 'disponible', 'funciona', 'abierto'],
+        response: 'ZarlippRN funciona las 24 horas del día, los 7 días de la semana. Siempre hay conductores disponibles para brindarte el servicio.'
+    },
+    'seguridad': {
+        patterns: ['seguro', 'seguridad', 'confiable', 'protegido', 'riesgo'],
+        response: 'Todos nuestros conductores están verificados y cuentan con seguro de riesgo. Además, cada viaje está registrado y monitoreado para tu seguridad.'
+    },
+    'conductor': {
+        patterns: ['conductor', 'chofer', 'taxista', 'ser conductor', 'registrarse'],
+        response: 'Para ser conductor, necesitas registrarte con tu vehículo, licencia de conducir y documentos en regla. Puedes hacerlo desde el botón "Ser Conductor" en el mapa.'
+    },
+    'ciudad': {
+        patterns: ['ciudad', 'catriel', '25 de mayo', 'ubicación', 'donde'],
+        response: 'Actualmente operamos en Catriel, Río Negro y 25 de Mayo, La Pampa. Puedes cambiar la ciudad desde el selector en el mapa.'
+    },
+    'pago': {
+        patterns: ['pago', 'cómo pagar', 'efectivo', 'tarjeta', 'mercado pago'],
+        response: 'Aceptamos efectivo y Mercado Pago. El pago se realiza al finalizar el viaje. La tarifa fija es $4.000.'
+    },
+    'cancelar': {
+        patterns: ['cancelar', 'cancelación', 'no quiero', 'cambiar'],
+        response: 'Puedes cancelar tu viaje en cualquier momento antes de que el conductor llegue. Si cancelas después de que acepte, puede haber una pequeña tarifa de cancelación.'
+    },
+    'problema': {
+        patterns: ['problema', 'error', 'no funciona', 'ayuda', 'soporte'],
+        response: 'Si tienes algún problema, puedes contactarnos por email a soporte@zarlipprn.com o usar este chat. Estamos aquí para ayudarte.'
+    }
+};
+
+// Función para procesar mensaje con IA
+function processMessageWithAI(message) {
+    const lowerMessage = message.toLowerCase();
+    
+    // Buscar coincidencias en los patrones
+    for (const [key, faq] of Object.entries(FAQ_RESPONSES)) {
+        for (const pattern of faq.patterns) {
+            if (lowerMessage.includes(pattern)) {
+                return faq.response;
+            }
+        }
+    }
+    
+    // Si no encuentra coincidencia, respuesta genérica
+    return 'No entendí tu consulta. Puedes preguntarme sobre tarifas, horarios, seguridad, cómo ser conductor, ciudades disponibles, formas de pago o cancelaciones. ¿En qué más puedo ayudarte?';
 }
 
 function sendMessage() {
@@ -714,16 +829,20 @@ function sendMessage() {
         addMessageToChat(message, 'user');
         messageInput.value = '';
         
-        // Simular respuesta automática
+        // Procesar mensaje con IA
         setTimeout(() => {
-            const responses = [
-                'Gracias por tu mensaje. ¿En qué podemos ayudarte?',
-                'Un conductor estará disponible pronto.',
-                '¿Necesitas información sobre tarifas?',
-                '¿Quieres solicitar un taxi ahora?'
-            ];
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            addMessageToChat(randomResponse, 'system');
+            const aiResponse = processMessageWithAI(message);
+            addMessageToChat(aiResponse, 'system');
+            
+            // Guardar mensaje en base de datos
+            if (currentUser) {
+                DatabaseManager.saveChatMessage({
+                    userId: currentUser.id,
+                    message: message,
+                    response: aiResponse,
+                    timestamp: new Date().toISOString()
+                });
+            }
         }, 1000);
     }
 }
@@ -735,6 +854,14 @@ function addMessageToChat(message, sender) {
     
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Función para inicializar chat con mensaje de bienvenida
+function initializeChat() {
+    if (chatMessages.children.length === 0) {
+        addMessageToChat('¡Hola! Soy el asistente virtual de ZarlippRN. ¿En qué puedo ayudarte?', 'system');
+        addMessageToChat('Puedes preguntarme sobre tarifas, horarios, seguridad, cómo ser conductor, ciudades disponibles, formas de pago o cancelaciones.', 'system');
+    }
 }
 
 function setupBookingForm() {
@@ -787,12 +914,29 @@ function initMap() {
     initializeMap();
 }
 
+// Función para cambiar ciudad
+function changeCity() {
+    const citySelect = document.getElementById('city-select');
+    currentCity = citySelect.value;
+    
+    console.log('Cambiando a ciudad:', CITIES[currentCity].name);
+    
+    // Si el mapa ya está inicializado, centrarlo en la nueva ciudad
+    if (map && typeof L !== 'undefined') {
+        map.setView(CITIES[currentCity].center, CITIES[currentCity].zoom);
+        showNotification(`Mapa centrado en ${CITIES[currentCity].name}`, 'info');
+        
+        // Recargar conductores para la nueva ciudad
+        loadTestDrivers();
+    }
+}
+
 // Función para inicializar mapa con Leaflet (gratis)
 function initLeafletMap() {
     console.log('Inicializando mapa con Leaflet (OpenStreetMap)');
     
-    // Crear mapa centrado en Argentina
-    const map = L.map('map').setView([-35.0, -65.0], 6);
+    // Crear mapa centrado en la ciudad actual
+    map = L.map('map').setView(CITIES[currentCity].center, CITIES[currentCity].zoom);
     
     // Agregar capa de OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -1306,25 +1450,6 @@ function updateDriverLocation() {
 }
 
 // Funciones del panel de perfil
-function updateProfileInfo() {
-    if (currentUser) {
-        document.getElementById('user-name').textContent = currentUser.name;
-        document.getElementById('user-email').textContent = currentUser.email;
-        document.getElementById('user-phone').textContent = currentUser.phone || 'No especificado';
-        
-        const typeValue = document.querySelector('.type-value');
-        if (typeValue) {
-            typeValue.textContent = currentUser.userType === 'admin' ? 'Administrador' : 
-                                  currentUser.userType === 'driver' ? 'Conductor' : 'Pasajero';
-        }
-        
-        // Actualizar estadísticas (datos de ejemplo)
-        document.getElementById('total-trips').textContent = Math.floor(Math.random() * 50) + 1;
-        document.getElementById('user-rating').textContent = (4.5 + Math.random() * 0.5).toFixed(1);
-        document.getElementById('total-spent').textContent = formatCurrency(Math.floor(Math.random() * 50000) + 10000);
-        document.getElementById('active-days').textContent = Math.floor(Math.random() * 30) + 1;
-    }
-}
 
 function logout() {
     if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
@@ -1358,12 +1483,38 @@ function logout() {
 }
 
 function editProfile() {
+    console.log('=== EDITANDO PERFIL ===');
+    
     const newName = prompt('Nuevo nombre:', currentUser.name);
-    if (newName && newName.trim()) {
+    if (newName && newName.trim() && newName.trim() !== currentUser.name) {
+        const oldName = currentUser.name;
         currentUser.name = newName.trim();
+        
+        // Actualizar en localStorage
         localStorage.setItem('user', JSON.stringify(currentUser));
+        
+        // Actualizar en la lista de usuarios locales
+        const existingUsers = JSON.parse(localStorage.getItem('localUsers') || '{}');
+        if (existingUsers[currentUser.email]) {
+            existingUsers[currentUser.email].name = newName.trim();
+            localStorage.setItem('localUsers', JSON.stringify(existingUsers));
+        }
+        
+        // Actualizar UI
         updateProfileInfo();
-        showNotification('Perfil actualizado correctamente', 'success');
+        updateAuthUI(); // Para actualizar el nombre en el header
+        
+        // Guardar en base de datos
+        DatabaseManager.saveUser(currentUser).then(savedUser => {
+            if (savedUser) {
+                console.log('✅ Perfil actualizado en base de datos');
+            }
+        });
+        
+        showNotification(`Nombre actualizado de "${oldName}" a "${newName.trim()}"`, 'success');
+        console.log('=== PERFIL ACTUALIZADO ===');
+    } else if (newName && newName.trim() === currentUser.name) {
+        showNotification('El nombre es el mismo', 'info');
     }
 }
 
@@ -1560,10 +1711,140 @@ function setupRegistrationForm() {
     }
 }
 
-// Función para cerrar modales
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.style.display = 'none';
+// Función para usar ubicación actual
+function useCurrentLocation(field) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                // Simular dirección basada en coordenadas
+                const address = `Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`;
+                
+                if (field === 'pickup') {
+                    document.getElementById('pickup-location').value = address;
+                }
+                
+                showNotification('Ubicación obtenida correctamente', 'success');
+            },
+            (error) => {
+                console.error('Error obteniendo ubicación:', error);
+                showNotification('No se pudo obtener tu ubicación', 'warning');
+            }
+        );
+    } else {
+        showNotification('Geolocalización no soportada', 'error');
     }
+}
+
+// Función para solicitar viaje mejorada
+function requestRide() {
+    console.log('=== SOLICITANDO VIAJE ===');
+    
+    const pickup = document.getElementById('pickup-location').value.trim();
+    const destination = document.getElementById('destination').value.trim();
+    const passengers = parseInt(document.getElementById('passengers').value);
+    
+    // Validaciones
+    if (!pickup) {
+        showNotification('Por favor ingresa tu ubicación de origen', 'warning');
+        return;
+    }
+    
+    if (!destination) {
+        showNotification('Por favor ingresa tu destino', 'warning');
+        return;
+    }
+    
+    if (passengers > 3) {
+        showNotification('Máximo 3 pasajeros permitidos', 'warning');
+        return;
+    }
+    
+    // Crear solicitud de viaje
+    const rideRequest = {
+        id: Date.now(),
+        passengerId: currentUser ? currentUser.id : 'guest',
+        passengerName: currentUser ? currentUser.name : 'Usuario',
+        pickup: pickup,
+        destination: destination,
+        passengers: passengers,
+        fare: 4000,
+        city: currentCity,
+        status: 'PENDING',
+        createdAt: new Date().toISOString()
+    };
+    
+    console.log('Solicitud de viaje:', rideRequest);
+    
+    // Mostrar notificación de solicitud
+    showNotification('🚗 Solicitando taxi...', 'info');
+    
+    // Simular proceso de solicitud
+    setTimeout(() => {
+        // Guardar solicitud en localStorage
+        const rides = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+        rides.unshift(rideRequest);
+        localStorage.setItem('rideRequests', JSON.stringify(rides));
+        
+        // Notificar a conductores (simulado)
+        notifyDrivers(rideRequest);
+        
+        showNotification('✅ ¡Taxi solicitado! Los conductores recibirán tu solicitud', 'success');
+        
+        // Limpiar formulario
+        document.getElementById('pickup-location').value = '';
+        document.getElementById('destination').value = '';
+        document.getElementById('passengers').value = '1';
+        
+        console.log('=== VIAJE SOLICITADO EXITOSAMENTE ===');
+    }, 2000);
+}
+
+// Función para notificar conductores
+function notifyDrivers(rideRequest) {
+    console.log('Notificando conductores sobre nueva solicitud:', rideRequest);
+    
+    // Simular notificación a conductores disponibles
+    const availableDrivers = drivers.filter(driver => driver.status === 'available');
+    
+    if (availableDrivers.length > 0) {
+        showNotification(`📢 ${availableDrivers.length} conductores notificados`, 'info');
+        
+        // Simular respuesta de conductor después de unos segundos
+        setTimeout(() => {
+            const randomDriver = availableDrivers[Math.floor(Math.random() * availableDrivers.length)];
+            simulateDriverResponse(rideRequest, randomDriver);
+        }, 3000 + Math.random() * 5000);
+    } else {
+        showNotification('⚠️ No hay conductores disponibles en este momento', 'warning');
+    }
+}
+
+// Función para simular respuesta del conductor
+function simulateDriverResponse(rideRequest, driver) {
+    console.log('Conductor responde:', driver.name);
+    
+    const response = {
+        rideId: rideRequest.id,
+        driverId: driver.id,
+        driverName: driver.name,
+        driverVehicle: driver.vehicle,
+        driverPlate: driver.plate,
+        estimatedTime: Math.floor(Math.random() * 15) + 5, // 5-20 minutos
+        status: 'ACCEPTED',
+        respondedAt: new Date().toISOString()
+    };
+    
+    // Actualizar estado del viaje
+    const rides = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+    const rideIndex = rides.findIndex(ride => ride.id === rideRequest.id);
+    if (rideIndex !== -1) {
+        rides[rideIndex].status = 'ACCEPTED';
+        rides[rideIndex].driver = response;
+        localStorage.setItem('rideRequests', JSON.stringify(rides));
+    }
+    
+    showNotification(`🎉 ¡${driver.name} aceptó tu viaje! Llegará en ${response.estimatedTime} minutos`, 'success');
 }

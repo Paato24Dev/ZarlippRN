@@ -446,6 +446,39 @@ body {
     display: flex;
     justify-content: center;
     gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.city-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(26, 26, 46, 0.9);
+    padding: 8px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.city-selector label {
+    color: var(--text-light);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.city-selector select {
+    background: var(--primary-dark);
+    color: var(--text-light);
+    border: 1px solid var(--accent-violet);
+    border-radius: 8px;
+    padding: 4px 8px;
+    font-size: 12px;
+    outline: none;
+}
+
+.city-selector select:focus {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
 }
 
 .control-btn {
@@ -542,6 +575,74 @@ body {
 .book-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(114, 9, 183, 0.3);
+}
+
+.location-input {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.location-input input {
+    flex: 1;
+}
+
+.location-btn {
+    background: var(--accent-cyan);
+    color: var(--text-light);
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.location-btn:hover {
+    background: var(--accent-violet);
+    transform: scale(1.05);
+}
+
+.fare-info {
+    margin: 20px 0;
+}
+
+.fare-card {
+    background: var(--gradient-secondary);
+    color: var(--text-light);
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(114, 9, 183, 0.3);
+}
+
+.fare-card h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.5rem;
+    color: var(--accent-cyan);
+}
+
+.fare-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fare-details p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.booking-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.booking-note {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    font-style: italic;
 }
 
 /* Chat */
