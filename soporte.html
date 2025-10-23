@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soporte - ZarlippRN</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16x16.png">
+    <link rel="shortcut icon" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ========== Fondo Universal ========== -->
+    <div class="universal-background"></div>
+
+    <!-- ========== Barra de Navegación ========== -->
+    <nav>
+        <div class="container">
+            <!-- Logo/Nombre de la Empresa -->
+            <a href="index.html" class="logo">
+                ZarlippRN
+            </a>
+
+            <!-- Enlaces de Navegación (Escritorio) -->
+            <div class="nav-links">
+                <a href="servicios.html">Servicios</a>
+                <a href="tarifas.html">Tarifas</a>
+                <a href="soporte.html" class="active">Soporte</a>
+                <a href="login.html">Iniciar Sesión</a>
+                <a href="registro.html" class="btn-primary">Registrarse</a>
+            </div>
+
+            <!-- Botón de Menú (Móvil) -->
+            <button class="menu-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Menú Móvil (Oculto por defecto) -->
+        <div class="mobile-menu">
+            <a href="servicios.html">Servicios</a>
+            <a href="tarifas.html">Tarifas</a>
+            <a href="soporte.html" class="active">Soporte</a>
+            <a href="login.html">Iniciar Sesión</a>
+            <a href="registro.html" class="btn-primary">Registrarse</a>
+        </div>
+    </nav>
+
+    <!-- ========== Contenido de Soporte ========== -->
+    <main class="support-container">
+        
+        <!-- Título -->
+        <header class="support-header">
+            <h1 class="support-title">
+                Centro de <span class="highlight">Soporte</span>
+            </h1>
+            <p class="support-subtitle">
+                ¿Tenés preguntas? Estamos acá para ayudarte. Encontrá respuestas rápidas o contactanos directamente.
+            </p>
+        </header>
+
+        <!-- Layout de 2 columnas (FAQ + Formulario) -->
+        <div class="support-grid">
+            <!-- Columna 1: Preguntas Frecuentes (FAQ) -->
+            <section class="faq-section">
+                <h2 class="section-title">
+                    Preguntas Frecuentes
+                </h2>
+                <div class="faq-container">
+                    
+                    <!-- Pregunta 1 -->
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            ¿Qué métodos de pago aceptan?
+                            <svg class="faq-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Aceptamos efectivo, tarjetas de débito/crédito (a través de Mercado Pago en el vehículo) y transferencias. Podés confirmar con el conductor al iniciar el viaje.</p>
+                        </div>
+                    </details>
+
+                    <!-- Pregunta 2 -->
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            ¿Cómo funciona el servicio de Encomiendas?
+                            <svg class="faq-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>Es simple: indicás el punto de retiro y el punto de entrega del paquete en el formulario de pedido. Un conductor lo buscará y lo llevará a destino. Ideal para documentos, paquetes pequeños y medianos.</p>
+                        </div>
+                    </details>
+
+                    <!-- Pregunta 3 -->
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            ¿La tarifa de $4000 es fija?
+                            <svg class="faq-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>La "Tarifa Estándar" de $4000 es nuestro valor base de referencia para viajes cortos dentro del radio principal de la ciudad. El precio final se calcula en base a la distancia total y el tiempo estimado del viaje, el cual verás antes de confirmar.</p>
+                        </div>
+                    </details>
+                    
+                </div>
+            </section>
+
+            <!-- Columna 2: Formulario de Contacto -->
+            <section class="contact-section">
+                <h2 class="section-title">
+                    Envianos un Mensaje
+                </h2>
+                <div class="contact-form-container">
+                    <form id="support-form" action="#" method="POST">
+                        
+                        <!-- Campo Nombre -->
+                        <div class="form-group">
+                            <label for="name" class="form-label">Tu Nombre</label>
+                            <div class="input-container">
+                                <input type="text" id="name" name="name" class="form-input" placeholder="Juan Pérez" required>
+                            </div>
+                        </div>
+
+                        <!-- Campo Correo -->
+                        <div class="form-group">
+                            <label for="email" class="form-label">Tu Correo</label>
+                            <div class="input-container">
+                                <input type="email" id="email" name="email" class="form-input" placeholder="tu@correo.com" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Campo Mensaje -->
+                        <div class="form-group">
+                            <label for="message" class="form-label">Tu Mensaje</label>
+                            <div class="input-container">
+                                <textarea id="message" name="message" rows="5" class="form-input" placeholder="Escribí tu consulta acá..." required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Botón de Enviar -->
+                        <button type="submit" class="btn-primary">
+                            Enviar Mensaje
+                        </button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- ========== Pie de Página ========== -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-logo">ZarlippRN</p>
+                <p class="footer-description">La solución para tus viajes y encomiendas.</p>
+                <div class="footer-links">
+                    <a href="#">Facebook</a>
+                    <a href="#">Instagram</a>
+                    <a href="soporte.html">Contacto (Soporte)</a>
+                </div>
+                <p class="footer-copyright">&copy; 2024 ZarlippRN. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/visual-effects.js"></script>
+    <script src="js/soporte.js"></script>
+
+</body>
+</html>

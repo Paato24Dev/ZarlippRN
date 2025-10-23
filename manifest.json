@@ -1,0 +1,74 @@
+{
+  "name": "ZarlippRN - Taxis y Encomiendas",
+  "short_name": "ZarlippRN",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0A",
+  "theme_color": "#FFD700",
+  "description": "Tu app de confianza para viajes y encomiendas en la Patagonia.",
+  "icons": [
+    {
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Pedir Viaje",
+      "short_name": "Viaje",
+      "description": "Solicita un nuevo viaje rápidamente",
+      "url": "/index.html?action=new_trip",
+      "icons": [{ "src": "icons/shortcut-trip.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Enviar Paquete",
+      "short_name": "Paquete",
+      "description": "Envía una encomienda de forma sencilla",
+      "url": "/index.html?action=new_package",
+      "icons": [{ "src": "icons/shortcut-package.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Mi Perfil",
+      "short_name": "Perfil",
+      "description": "Accede a tu perfil de usuario",
+      "url": "/cliente-perfil.html",
+      "icons": [{ "src": "icons/shortcut-profile.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZarlippRN - Taxis y Encomiendas</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FFD700">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ZarlippRN">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16x16.png">
+    <link rel="shortcut icon" href="favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ========== Fondo Universal ========== -->
+    <div class="universal-background"></div>
+
+    <!-- ========== Barra de Navegación ========== -->
+    <nav>
+        <div class="container">
+            <!-- Logo/Nombre de la Empresa -->
+            <a href="index.html" class="logo">
+                ZarlippRN
+            </a>
+
+            <!-- Enlaces de Navegación (Escritorio) -->
+            <div class="nav-links">
+                <a href="servicios.html">Servicios</a>
+                <a href="tarifas.html">Tarifas</a>
+                <a href="soporte.html">Soporte</a>
+                <a href="login.html">Iniciar Sesión</a>
+                <a href="registro.html" class="btn-register">Registrarse</a>
+                    </div>
+                    
+            <!-- Botón de Menú (Móvil) -->
+            <button class="menu-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+                    </div>
+                    
+        <!-- Menú Móvil (Oculto por defecto) -->
+        <div class="mobile-menu">
+            <a href="servicios.html">Servicios</a>
+            <a href="tarifas.html">Tarifas</a>
+            <a href="soporte.html">Soporte</a>
+            <a href="login.html">Iniciar Sesión</a>
+            <a href="registro.html">Registrarse</a>
+                    </div>
+                </nav>
+                
+    <!-- ========== Sección Principal (Hero) ========== -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-content">
+                <!-- Texto Principal -->
+                <div class="hero-text animate-fadeInLeft">
+                    <h1 class="title-primary">
+                        Tu viaje. Tu encomienda. <span class="highlight">Al instante.</span>
+                    </h1>
+                    <p class="subtitle">
+                        Pedí un viaje o enviá un paquete con ZarlippRN. La forma más rápida y segura de moverte por la ciudad.
+                    </p>
+                </div>
+                
+                <!-- Formulario de Pedido -->
+                <div id="order-form" class="order-form-container animate-fadeInRight">
+                    <h2 class="title-secondary text-center">¿A dónde vamos?</h2>
+                    
+                    <form id="pedido-form">
+                        <div class="form-group">
+                            <label for="desde">Desde</label>
+                            <div class="input-container">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25s-7.5-4.108-7.5-11.25a7.5 7.5 0 1 1 15 0Z" />
+                                </svg>
+                                <input type="text" id="desde" name="desde" class="form-input" placeholder="Mi ubicación actual" required>
+                                <button type="button" id="location-btn" class="location-btn" title="Usar mi ubicación actual">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25s-7.5-4.108-7.5-11.25a7.5 7.5 0 1 1 15 0Z" />
+                                    </svg>
+                </button>
+            </div>
+        </div>
+        
+                        <div class="form-group">
+                            <label for="hasta">Hasta</label>
+                            <div class="input-container">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25s-7.5-4.108-7.5-11.25a7.5 7.5 0 1 1 15 0Z" />
+                                </svg>
+                                <input type="text" id="hasta" name="hasta" class="form-input" placeholder="¿A dónde vas?" required>
+            </div>
+        </div>
+
+                        <button type="submit" class="btn-primary">Pedir Viaje Ahora</button>
+                        </form>
+                    </div>
+                    </div>
+                </div>
+    </section>
+
+    <!-- ========== Sección Tarifa Estándar ========== -->
+    <section id="tarifa" class="tariff-section">
+        <div class="container">
+            <div class="tariff-content">
+                <h3>Tarifa Estándar</h3>
+                <p class="price">$4000</p>
+                <p>Nuestro valor de referencia para viajes cortos dentro del radio principal de la ciudad.</p>
+                                </div>
+                            </div>
+    </section>
+
+    <!-- ========== Sección Servicios ========== -->
+    <section id="servicios" class="services-section">
+        <div class="container">
+            <header class="section-header">
+                <h2>Todo lo que necesitás, <span class="highlight">en un solo lugar</span></h2>
+                <p>No solo te llevamos a vos. También llevamos tus paquetes, compras o lo que necesites enviar.</p>
+            </header>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5v-1.875a3.375 3.375 0 0 1 3.375-3.375h9.75a3.375 3.375 0 0 1 3.375 3.375v1.875M13.5 10.5V6.75a1.5 1.5 0 0 0-1.5-1.5h-3a1.5 1.5 0 0 0-1.5 1.5v3.75" />
+                        </svg>
+                            </div>
+                    <h3>Viajes de Pasajeros</h3>
+                    <p>Movete por la ciudad de forma segura y eficiente. Pedí un auto y llegá a tu destino sin demoras, con conductores de confianza.</p>
+                    <a href="#" class="service-link" onclick="scrollToOrderForm()">
+                        Pedir un viaje
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+        </div>
+
+                <div class="service-card">
+                    <div class="service-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 10.5H.86c.48-4.5 4.36-8 8.94-8 5.24 0 9.4 4.24 9.4 9.5 0 1.13-.22 2.2-.6 3.14M3 10.5v6.5C3 19.33 4.67 21 6.5 21h11c1.83 0 3.5-1.67 3.5-3.5v-6.5" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13 14.25c0 .41-.34.75-.75.75h-4.5c-.41 0-.75-.34-.75-.75V10.5h6v3.75Z" />
+                        </svg>
+                                </div>
+                    <h3>Encomiendas y Reparto</h3>
+                    <p>¿Necesitás enviar un paquete, documentos o una compra? Usá nuestro servicio de encomiendas. Rápido, seguro y puerta a puerta.</p>
+                    <a href="#" class="service-link" onclick="scrollToOrderForm('package')">
+                        Enviar un paquete
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== Pie de Página (Footer) ========== -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-logo">ZarlippRN</p>
+                <p class="footer-description">La solución para tus viajes y encomiendas.</p>
+                <div class="footer-links">
+                    <a href="#">Facebook</a>
+                    <a href="#">Instagram</a>
+                    <a href="soporte.html">Contacto (Soporte)</a>
+                            </div>
+                <p class="footer-copyright">&copy; 2024 ZarlippRN. Todos los derechos reservados.</p>
+                                </div>
+                            </div>
+    </footer>
+
+    <!-- ========== JavaScript ========== -->
+    <script src="js/payment-system.js"></script>
+    <script src="js/visual-effects.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/index.js"></script>
+
+</body>
+</html>
