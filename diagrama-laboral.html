@@ -3,144 +3,122 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-  <title>Diagrama Laboral | Clear Petroleum - Sepulveda Favio</title>
-  <meta name="description" content="Calendario laboral responsive para Clear Petroleum - Sepulveda Favio. Visualizá tu diagrama por mes, navegá entre años y no pierdas de vista el día actual." />
+  <title>Diagrama 14x7 | Clear Petroleum - Sepulveda Favio</title>
+  <meta name="description" content="Diagrama laboral 14x7 Clear Petroleum - Sepulveda Favio - 7 Día + 7 Noche + 7 Franco. Inicio Jueves 16 Julio 2026." />
   <meta name="theme-color" content="#FF6B00" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="stylesheet" href="css/diagrama-laboral.css" />
   <link rel="manifest" href="manifest.json" />
-  <!-- Preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 </head>
 <body>
-  <!-- Topbar -->
   <header class="topbar">
     <div class="container">
       <div class="brand">
         <div class="brand-logo">CP</div>
         <div class="brand-text">
           <h1>Clear <span>Petroleum</span></h1>
-          <p>Diagrama Laboral</p>
+          <p>Diagrama 14x7 • 7D / 7N / 7F</p>
         </div>
       </div>
       <div class="user-chip">
         <div class="user-avatar">SF</div>
         <div class="user-info">
           <strong>Sepulveda Favio</strong>
-          <span>Operador • Base</span>
+          <span>14x7 • Inicio 16/07/26</span>
         </div>
       </div>
     </div>
   </header>
 
+  <div class="diagrama-config">
+    <div class="diagrama-badge"><span class="dot dia"></span> <strong>7 DÍA</strong> Trabajo día</div>
+    <div class="diagrama-badge"><span class="dot noche"></span> <strong>7 NOCHE</strong> Trabajo noche</div>
+    <div class="diagrama-badge"><span class="dot franco"></span> <strong>7 FRANCO</strong> Descanso</div>
+    <div class="diagrama-badge">📅 Inicio: <strong id="cfgStartDate">16 Jul 2026</strong> - Jueves - Día 1</div>
+    <div class="diagrama-badge">🔄 Ciclo 21 días - <strong>14 trabajo / 7 franco</strong></div>
+  </div>
+
   <main class="main">
     <div class="hero-row">
-      <!-- Calendario -->
       <section class="calendar-card">
         <div class="calendar-toolbar">
           <div class="month-title">
             <h2 id="monthYearLabel">Mes Año</h2>
             <span id="badgeHoy" class="badge-hoy">HOY</span>
           </div>
-
           <div class="nav-controls">
-            <button id="btnPrevYear" class="btn-icon" title="Año anterior (↑)" aria-label="Año anterior">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg>
-            </button>
-            <button id="btnPrevMonth" class="btn-icon" title="Mes anterior (←)" aria-label="Mes anterior">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
-            </button>
-            <button id="btnToday" class="btn-today" title="Ir a hoy (T)">HOY</button>
-            <button id="btnNextMonth" class="btn-icon" title="Mes siguiente (→)" aria-label="Mes siguiente">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-            </button>
-            <button id="btnNextYear" class="btn-icon primary" title="Año siguiente (↓)" aria-label="Año siguiente">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 17 5-5-5-5"/><path d="m6 17 5-5-5-5"/></svg>
-            </button>
-
+            <button id="btnPrevYear" class="btn-icon" title="Año anterior">❮❮</button>
+            <button id="btnPrevMonth" class="btn-icon" title="Mes anterior">❮</button>
+            <button id="btnToday" class="btn-today" title="Ir a hoy">HOY</button>
+            <button id="btnNextMonth" class="btn-icon" title="Mes siguiente">❯</button>
+            <button id="btnNextYear" class="btn-icon primary" title="Año siguiente">❯❯</button>
             <div class="selects" style="margin-left:4px">
-              <select id="selectMonth" class="select-month" aria-label="Seleccionar mes"></select>
-              <select id="selectYear" class="select-year" aria-label="Seleccionar año"></select>
+              <select id="selectMonth" class="select-month"></select>
+              <select id="selectYear" class="select-year"></select>
             </div>
           </div>
         </div>
-
         <div id="weekdays" class="weekdays"></div>
         <div id="daysGrid" class="days-grid"></div>
-
-        <div class="footer">
-          Deslizá en el celular para cambiar de mes • Usá flechas del teclado • Presioná T para volver a hoy
-        </div>
+        <div class="footer">Toca un día para ver detalle • Deslizá para cambiar mes • T = hoy</div>
       </section>
 
-      <!-- Panel lateral info -->
       <aside class="info-panel">
-        <!-- Hoy -->
         <div class="info-card today-hero">
-          <h3><i>📅</i> HOY ES</h3>
+          <h3><i>📅</i> HOY ESTÁS DE</h3>
           <div id="todayWeekday" class="big-weekday">LUNES</div>
           <div id="todayNumber" class="big-date">01</div>
           <div id="todayMonthYear" class="big-month">Enero 2026</div>
-
+          <div id="todayTurnoPill" class="turno-pill dia">☀️ DÍA 1/7</div>
+          <div id="todayTurnoDetail" style="font-size:12px;color:#C8C8C8;margin-top:8px;line-height:1.4;">Día 1 de turno</div>
           <div class="stats-grid">
-            <div class="stat">
-              <label>Día del año</label>
-              <strong id="todayDayOfYear">1</strong>
-            </div>
-            <div class="stat">
-              <label>Semana</label>
-              <strong id="todayWeekNumber">1</strong>
-            </div>
-            <div class="stat">
-              <label>Restan</label>
-              <strong><span id="todayRemaining">364</span> días</strong>
-            </div>
-            <div class="stat">
-              <label>Turno</label>
-              <strong>Por definir</strong>
-            </div>
+            <div class="stat"><label>Día del año</label><strong id="todayDayOfYear">1</strong></div>
+            <div class="stat"><label>Semana</label><strong id="todayWeekNumber">1</strong></div>
+            <div class="stat"><label>Ciclo</label><strong>14x7 • 21 días</strong></div>
+            <div class="stat"><label>Inicio ciclo</label><strong>16 Jul 2026</strong></div>
           </div>
+          <div id="todayNextFranco" class="next-event"></div>
+          <div id="todayNextEntrada" class="next-event"></div>
         </div>
 
-        <!-- Seleccionado -->
         <div class="info-card selected-preview">
           <h3><i>👁️</i> Día Seleccionado</h3>
-          <div id="selectedDateLabel" class="selected-date">Lunes 1 de Enero de 2026</div>
+          <div id="selectedDateLabel" class="selected-date">Lunes 1 de Enero</div>
           <div id="selectedIsToday" class="selected-sub">Es hoy</div>
-          <div style="margin-top:12px; display:flex; gap:8px; align-items:center;">
-            <span id="selectedWeekdayShort" style="background:#FF6B00;color:white;font-weight:800;padding:4px 10px;border-radius:100px;font-size:11px;letter-spacing:0.8px;">LUN</span>
+          <div style="margin-top:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span id="selectedWeekdayShort" style="background:#FF6B00;color:white;font-weight:800;padding:4px 10px;border-radius:100px;font-size:11px;">LUN</span>
             <span id="selectedDayMonth" style="font-size:13px;color:#C8C8C8;">1 Ene</span>
+            <span id="selectedTurnoPill" class="turno-pill dia" style="margin-top:0;">☀️ DÍA 1/7</span>
           </div>
-          <div style="margin-top:14px; background: rgba(255,107,0,0.08); border:1px dashed rgba(255,107,0,0.3); border-radius:10px; padding:10px 12px; font-size:12px; line-height:1.4; color:#C8C8C8;">
-            Próximamente: aquí veremos tu diagrama 7x7, francos, días de 12hs, etc. Esta es la base calendario que pediste.
-          </div>
+          <div id="selectedTurnoDetail" style="margin-top:14px; background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px; font-size:11px; line-height:1.6; color:#C8C8C8;"></div>
         </div>
 
-        <!-- Leyenda -->
         <div class="info-card">
-          <h3><i>🎨</i> Leyenda</h3>
+          <h3><i>🎨</i> Leyenda Diagrama 14x7</h3>
           <div class="legend">
-            <div class="legend-item"><span class="legend-dot today"></span> Hoy</div>
-            <div class="legend-item"><span class="legend-dot selected"></span> Seleccionado</div>
-            <div class="legend-item"><span class="legend-dot weekend"></span> Fin de semana</div>
+            <div class="legend-item"><span class="legend-dot dia"></span> DÍA (7d) - Trabajo día</div>
+            <div class="legend-item"><span class="legend-dot noche"></span> NOCHE (7d) - Trabajo noche</div>
+            <div class="legend-item"><span class="legend-dot franco"></span> FRANCO (7d) - Descanso</div>
           </div>
-          <div style="margin-top:12px; font-size:11px; color:#9A9A9A; line-height:1.5;">
-            <strong style="color:white;">Clear Petroleum</strong> - Calendario laboral base.<br>
-            7 columnas (Lunes a Domingo). 100% responsive. Navegación por meses y años.
+          <div style="margin-top:14px; font-size:11px; color:#9A9A9A; line-height:1.6; background: rgba(255,184,0,0.06); border:1px dashed rgba(255,184,0,0.2); border-radius:8px; padding:10px;">
+            <strong style="color:white;">Tu diagrama:</strong><br>
+            • 16-22 Jul: DÍA (7 días) ☀️<br>
+            • 23-29 Jul: NOCHE (7 días) 🌙<br>
+            • 30 Jul-05 Ago: FRANCO (7 días) 🏠<br>
+            • 06 Ago: Reinicia DÍA<br><br>
+            Ciclo se repite infinito hacia atrás y adelante.
           </div>
         </div>
 
-        <!-- Próximos pasos -->
-        <div class="info-card" style="border-color: rgba(255,107,0,0.2);">
-          <h3><i>🚀</i> Siguiente paso</h3>
-          <div style="font-size:12px; color:#C8C8C8; line-height:1.6;">
-            Cuando quieras avanzamos con:<br>
-            • Carga de diagrama (ej: 7x7, 14x14)<br>
-            • Colores por franco / trabajo / noche<br>
-            • Cálculo automático del ciclo<br>
-            • Guardado por usuario (localStorage / login)<br>
-            • Exportar / compartir imagen<br>
+        <div class="info-card">
+          <h3><i>📊</i> Resumen</h3>
+          <div style="font-size:11px;color:#C8C8C8;line-height:1.6;">
+            • Cada celda muestra: <strong>DÍA/NOCHE/FRANCO</strong> + día del turno + barra progreso<br>
+            • <strong>Hoy</strong> está resaltado con borde naranja<br>
+            • Toca cualquier día para ver entradas/salidas de franco<br>
+            • Franco siempre 7 días, trabajo 14 (7 día + 7 noche)
           </div>
         </div>
       </aside>
@@ -148,11 +126,5 @@
   </main>
 
   <script src="js/diagrama-laboral.js"></script>
-  <script>
-    // Registra SW si existe para PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').catch(()=>{});
-    }
-  </script>
 </body>
 </html>
