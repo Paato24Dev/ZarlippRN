@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>Diagrama 14x7 | Clear Petroleum - Sepulveda Favio</title>
+  <meta name="description" content="Diagrama laboral 14x7 Clear Petroleum - Sepulveda Favio - 7 Día + 7 Noche + 7 Franco. Inicio Jueves 16 Julio 2026." />
+  <meta name="theme-color" content="#FF6B00" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="css/diagrama-laboral.css" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container">
+      <div class="brand">
+        <div class="brand-logo">CP</div>
+        <div class="brand-text">
+          <h1>Clear <span>Petroleum</span></h1>
+          <p>Diagrama 14x7 • 7D / 7N / 7F</p>
+        </div>
+      </div>
+      <div class="user-chip">
+        <div class="user-avatar">SF</div>
+        <div class="user-info">
+          <strong>Sepulveda Favio</strong>
+          <span>14x7 • Inicio 16/07/26</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="diagrama-config">
+    <div class="diagrama-badge"><span class="dot dia"></span> <strong>7 DÍA</strong> Trabajo día</div>
+    <div class="diagrama-badge"><span class="dot noche"></span> <strong>7 NOCHE</strong> Trabajo noche</div>
+    <div class="diagrama-badge"><span class="dot franco"></span> <strong>7 FRANCO</strong> Descanso</div>
+    <div class="diagrama-badge">📅 Inicio: <strong id="cfgStartDate">16 Jul 2026</strong> - Jueves Día 1</div>
+    <div class="diagrama-badge">🔄 <strong>14 trabajo / 7 franco</strong> • Ciclo 21 días</div>
+    <div class="diagrama-badge" style="border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.12);">🎉 <strong id="cfgFeriadosMes" style="color:#FCA5A5;">cargando feriados...</strong> • AR 2024-2027</div>
+  </div>
+
+  <main class="main">
+    <div class="hero-row">
+      <section class="calendar-card">
+        <div class="calendar-toolbar">
+          <div class="month-title">
+            <h2 id="monthYearLabel">Mes Año</h2>
+            <span id="badgeHoy" class="badge-hoy">HOY</span>
+          </div>
+          <div class="nav-controls">
+            <button id="btnPrevYear" class="btn-icon" title="Año anterior">❮❮</button>
+            <button id="btnPrevMonth" class="btn-icon" title="Mes anterior">❮</button>
+            <button id="btnToday" class="btn-today" title="Ir a hoy">HOY</button>
+            <button id="btnNextMonth" class="btn-icon" title="Mes siguiente">❯</button>
+            <button id="btnNextYear" class="btn-icon primary" title="Año siguiente">❯❯</button>
+            <div class="selects" style="margin-left:4px">
+              <select id="selectMonth" class="select-month"></select>
+              <select id="selectYear" class="select-year"></select>
+            </div>
+          </div>
+        </div>
+        <div id="weekdays" class="weekdays"></div>
+        <div id="daysGrid" class="days-grid"></div>
+        <div class="footer">Toca un día para ver detalle • Deslizá para cambiar mes • T = hoy</div>
+      </section>
+
+      <aside class="info-panel">
+        <div class="info-card today-hero">
+          <h3><i>📅</i> HOY ESTÁS DE</h3>
+          <div id="todayWeekday" class="big-weekday">LUNES</div>
+          <div id="todayNumber" class="big-date">01</div>
+          <div id="todayMonthYear" class="big-month">Enero 2026</div>
+          <div id="todayTurnoPill" class="turno-pill dia">☀️ DÍA 1/7</div>
+          <div id="todayTurnoDetail" style="font-size:12px;color:#C8C8C8;margin-top:8px;line-height:1.4;">Día 1 de turno</div>
+          <div class="stats-grid">
+            <div class="stat"><label>Día del año</label><strong id="todayDayOfYear">1</strong></div>
+            <div class="stat"><label>Semana</label><strong id="todayWeekNumber">1</strong></div>
+            <div class="stat"><label>Ciclo</label><strong>14x7 • 21 días</strong></div>
+            <div class="stat"><label>Inicio ciclo</label><strong>16 Jul 2026</strong></div>
+          </div>
+          <div id="todayNextFranco" class="next-event"></div>
+          <div id="todayNextEntrada" class="next-event"></div>
+        </div>
+
+        <div class="info-card selected-preview">
+          <h3><i>👁️</i> Día Seleccionado</h3>
+          <div id="selectedDateLabel" class="selected-date">Lunes 1 de Enero</div>
+          <div id="selectedIsToday" class="selected-sub">Es hoy</div>
+          <div style="margin-top:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span id="selectedWeekdayShort" style="background:#FF6B00;color:white;font-weight:800;padding:4px 10px;border-radius:100px;font-size:11px;">LUN</span>
+            <span id="selectedDayMonth" style="font-size:13px;color:#C8C8C8;">1 Ene</span>
+            <span id="selectedTurnoPill" class="turno-pill dia" style="margin-top:0;">☀️ DÍA 1/7</span>
+          </div>
+          <div id="selectedTurnoDetail" style="margin-top:14px; background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:12px; font-size:11px; line-height:1.6; color:#C8C8C8;"></div>
+        </div>
+
+        <div class="info-card">
+          <h3><i>🎨</i> Leyenda Diagrama 14x7 + Feriados</h3>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-dot dia"></span> DÍA (7d) - Trabajo día</div>
+            <div class="legend-item"><span class="legend-dot noche"></span> NOCHE (7d) - Trabajo noche</div>
+            <div class="legend-item"><span class="legend-dot franco"></span> FRANCO (7d) - Descanso</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#EF4444;box-shadow:0 0 8px #EF4444;"></span> FERIADO AR - Nacional</div>
+          </div>
+          <div style="margin-top:14px; font-size:11px; color:#9A9A9A; line-height:1.6; background: rgba(255,184,0,0.06); border:1px dashed rgba(255,184,0,0.2); border-radius:8px; padding:10px;">
+            <strong style="color:white;">Tu diagrama:</strong><br>
+            • 16-22 Jul: <span style="color:#FFB800;font-weight:800;">DÍA</span> (7 días) ☀️<br>
+            • 23-29 Jul: <span style="color:#3B82F6;font-weight:800;">NOCHE</span> (7 días) 🌙<br>
+            • 30 Jul-05 Ago: <span style="color:#22C55E;font-weight:800;">FRANCO</span> (7 días) 🏠<br>
+            • 06 Ago: Reinicia DÍA<br><br>
+            <strong style="color:#EF4444;">Feriados:</strong> borde rojo + etiqueta FERIADO + ! en esquina. Argentina 2024-2027 incluidos (Año Nuevo, Carnaval, Memoria, Malvinas, Semana Santa, 1 Mayo, 25 Mayo, Güemes, Belgrano, Independencia, San Martín, Diversidad, Soberanía, Inmaculada, Navidad + puentes).<br><br>
+            Ciclo se repite infinito.
+          </div>
+        </div>
+
+        <div class="info-card">
+          <h3><i>📊</i> Cómo leer cada día</h3>
+          <div style="font-size:11px;color:#C8C8C8;line-height:1.7;">
+            • Número arriba a la izquierda = día del mes<br>
+            • <strong style="background:#FFB800;color:#000;padding:2px 6px;border-radius:100px;">DÍA 3/7</strong> / <strong style="background:#3B82F6;color:white;padding:2px 6px;border-radius:100px;">NOCHE 2/7</strong> / <strong style="background:#22C55E;color:white;padding:2px 6px;border-radius:100px;">FRANCO 5/7</strong> = turno + progreso<br>
+            • Barra abajo = avance en el turno<br>
+            • <span style="background:#EF4444;color:white;padding:1px 6px;border-radius:100px;font-size:9px;font-weight:800;">FERIADO</span> + ❗ = día feriado nacional AR<br>
+            • <strong>Hoy</strong> = borde naranja brillante
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="js/diagrama-laboral.js"></script>
+</body>
+</html>
